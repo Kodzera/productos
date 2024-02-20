@@ -20,9 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['id'])) {
     $stmtInsertDetalle->bind_param("iii", $idProyecto, $idMaterial, $cantidad);
 
     // Insertar los materiales seleccionados en la tabla de historial
-    $insertHistorial = "INSERT INTO historial_materiales (id_empresa, id_material, cantidad) VALUES (?, ?, ?)";
-    $stmtInsertHistorial = $conn->prepare($insertHistorial);
-    $stmtInsertHistorial->bind_param("iii", $idProyecto, $idMaterial, $cantidad);
+    $insertMaterialHistorial = "INSERT INTO historial_materiales (material_id, cantidad, id_empresa) VALUES (?, ?, ?)";
+    $stmtInsertHistorial = $conn->prepare($insertMaterialHistorial);
+    $stmtInsertHistorial->bind_param("iii", $idMaterial, $cantidad, $idProyecto);
 
     while ($row = $resultSelectedMaterials->fetch_assoc()) {
         $idMaterial = $row['material_id'];
@@ -31,9 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['id'])) {
         $stmtInsertHistorial->execute(); // Guardar una copia en el historial
     }
 
-    $stmtInsertHistorial->close();
     // Cerrar las consultas preparadas después de usarlas
     $stmtInsertDetalle->close();
+    $stmtInsertHistorial->close();
 
     // Eliminar los registros de detalle_temp después de guardar el proyecto
     $deleteTempRecords = "DELETE FROM detalle_temp WHERE usuario_id = ?";

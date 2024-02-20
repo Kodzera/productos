@@ -31,12 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['materiales']) && isset
     $idProyecto = $_POST['id_proyecto']; // Obtener el ID del proyecto
 
     // Obtener el nombre del material seleccionado
-    $stmtNombreMaterial = $conn->prepare("SELECT nombre_material FROM materiales WHERE id = ?");
+    $stmtNombreMaterial = $conn->prepare("SELECT nombre FROM materiales WHERE id = ?");
     $stmtNombreMaterial->bind_param("i", $materialId);
     $stmtNombreMaterial->execute();
     $resultNombreMaterial = $stmtNombreMaterial->get_result();
     $rowNombreMaterial = $resultNombreMaterial->fetch_assoc();
-    $nombreMaterial = $rowNombreMaterial['nombre_material'];
+    $nombreMaterial = $rowNombreMaterial['nombre'];
 
     // Insertar los datos en la tabla detalle_temp
     $insertMaterial = "INSERT INTO detalle_temp (usuario_id, material_id, nombre_material, cantidad, id_empresa) VALUES (?, ?, ?, ?, ?)";
@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_id'])) {
                     <select class="form-control" id="materialExistente" name="materiales[]">
                         <option value="">Seleccione el material</option>
                         <?php while ($row = mysqli_fetch_assoc($resultadoMateriales)) { ?>
-                            <option value="<?= $row['id']; ?>"><?= $row['nombre_material']; ?></option>
+                            <option value="<?= $row['id']; ?>"><?= $row['nombre']; ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_id'])) {
                 // $stmtSelectedMaterials->execute();
                 // $resultSelectedMaterials = $stmtSelectedMaterials->get_result();
                 // Obtener los materiales seleccionados por el usuario para el proyecto actual
-                
+
                 $querySelectedMaterials = "SELECT * FROM detalle_temp WHERE usuario_id = ? AND id_empresa = ?";
                 $stmtSelectedMaterials = $conn->prepare($querySelectedMaterials);
                 $stmtSelectedMaterials->bind_param("ii", $usuarioId, $idProyecto); // Aquí se filtra por el proyecto actual

@@ -14,8 +14,7 @@ class PDF extends FPDF
 
         // Agregar cabecera para el código de material
         $this->Cell(40, 10, 'Codigo del Material', 1, 0, 'C');
-        $this->Cell(60, 10, 'Material', 1, 0, 'C');
-        $this->Cell(40, 10, 'Cantidad', 1, 1, 'C');
+        $this->Cell(100, 10, 'Material', 1, 0, 'C'); // Aumentar el ancho de la celda
     }
 
     // Pie de página
@@ -40,7 +39,7 @@ $idEmpresa = isset($_GET['id']) ? $_GET['id'] : null;
 
 if ($idEmpresa) {
     // Obtener datos de la base de datos
-    $sql = "SELECT d.*, m.nombre_material, m.codigo
+    $sql = "SELECT d.*, m.nombre, m.id
             FROM Detalles d
             INNER JOIN Materiales m ON d.id_material = m.id
             WHERE d.id_empresa = ?";
@@ -51,10 +50,13 @@ if ($idEmpresa) {
 
     // Llenar la tabla con los datos de la base de datos
     while ($row = $result->fetch_assoc()) {
-        $pdf->Cell(40, 10, $row['codigo'], 1, 0, 'C'); // Agregar el código del material
-        $pdf->Cell(60, 10, $row['nombre_material'], 1, 0, 'L');
-        $pdf->Cell(40, 10, $row['cantidad'], 1, 1, 'C');
+        $pdf->Ln(); // Agregar un salto de línea para pasar a la siguiente fila
+
+        $pdf->Cell(40, 10, $row['id_material'], 1, 0, 'C'); // Agregar el código del material
+        $pdf->Cell(100, 10, $row['nombre'], 1, 0, 'L'); // Agregar el nombre del material
     }
+
+
 
     // Salida del PDF
     $pdf->Output();

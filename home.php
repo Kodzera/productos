@@ -97,10 +97,11 @@ require "config/partials/header.php";
                                         <input type="hidden" name="id_proyecto" value="<?= $row['id']; ?>">
                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">Eliminar</button>
                                     </form>
-                                    <form action="generar_csv.php" method="post" style="display:inline;">
+                                    <form action="generar_excel.php" method="post" style="display:inline;">
                                         <input type="hidden" name="id_proyecto" value="<?= $row['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-success">Generar Exel</button>
+                                        <button type="submit" class="btn btn-sm btn-success">Generar Excel</button>
                                     </form>
+
                                 </td>
                             </tr>
                         <?php } ?>
@@ -110,7 +111,7 @@ require "config/partials/header.php";
         </div>
 
         <?php
-        $sqlGenero = "SELECT id, nombre_material FROM materiales ";
+        $sqlGenero = "SELECT id, nombre FROM materiales ";
         $generos = $conn->query($sqlGenero);
         ?>
 

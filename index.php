@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     // Consulta SQL para seleccionar el usuario por su nombre de usuario
-    $sql = "SELECT * FROM usuarios WHERE nombre = ?";
+    $sql = "SELECT * FROM usuarios WHERE usuario = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $usuario);
     $stmt->execute();
@@ -19,9 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Verificar la contraseña
         if ($password === $stored_password) {
-            $_SESSION['id'] = $row['id'];
+            $_SESSION['id_usuario'] = $row['id']; // Cambiamos 'id' por 'id_usuario'
             $_SESSION['nombre'] = $row['nombre'];
-            $_SESSION['tipo_usuario'] = $row['tipo_usuario'];
+            $_SESSION['rol'] = $row['rol']; // Agregar el rol del usuario a la sesión
             header("Location: home.php");
             exit();
         } else {
@@ -33,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 require "config/partials/header.php";
 ?>
+
 
 <body class="bg-primary">
     <div id="layoutAuthentication">

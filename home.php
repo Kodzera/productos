@@ -1,20 +1,24 @@
 <?php
 session_start();
+require 'config/database.php';
+
 if (!isset($_SESSION['id'])) {
     header("Location: index.php");
 }
-$nombre = $_SESSION['nombre'];
-$tipo_usuario = $_SESSION['tipo_usuario'];
-require 'config/database.php';
 
-// Procesamiento del formulario para creagener un nuevo proyecto
+$nombre = $_SESSION['nombre'];
+$rol = $_SESSION['rol']; // Obtener el rol del usuario de la sesión
+$idUsuario = $_SESSION['id_usuario']; //Obtener el id del usuario
+
+// Procesamiento del formulario para crear un nuevo proyecto
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['nombre_proyecto'])) {
     $nombreProyecto = trim($_POST['nombre_proyecto']);
 
     if (!empty($nombreProyecto)) {
-        $insertEmpresa = "INSERT INTO empresas (nombre_empresa) VALUES (?)";
+        // Insertar el nuevo proyecto junto con el id del usuario
+        $insertEmpresa = "INSERT INTO empresas (nombre_empresa, id_usuario) VALUES (?, ?)";
         $stmtEmpresa = $conn->prepare($insertEmpresa);
-        $stmtEmpresa->bind_param("s", $nombreProyecto);
+        $stmtEmpresa->bind_param("si", $nombreProyecto, $idUsuario); // 's' para cadena, 'i' para entero
         $stmtEmpresa->execute();
         $stmtEmpresa->close();
 
@@ -28,10 +32,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['nombre_proyecto'])) {
     exit();
 }
 
-$sqlPeliculas = "SELECT id, nombre_empresa AS nombre_proyecto FROM empresas ORDER BY id DESC";
-$peliculas = $conn->query($sqlPeliculas);
 
-require "config/partials/header.php";
+// Consulta SQL para seleccionar las empresas según el rol del usuario
+if ($rol === 'admin') {
+    $sqlPeliculas = "SELECT id, nombre_empresa AS nombre_proyecto FROM empresas ORDER BY id DESC";
+    $peliculas = $conn->query($sqlPeliculas);
+} else {
+    $sqlPeliculas = "SELECT id, nombre_empresa AS nombre_proyecto FROM empresas WHERE id_usuario = ? ORDER BY id DESC";
+    $stmt = $conn->prepare($sqlPeliculas);
+    $stmt->bind_param("i", $idUsuario);
+    $stmt->execute();
+    $peliculas = $stmt->get_result();
+}
+
+$sqlGenero = "SELECT id, nombre FROM materiales ";
+$generos = $conn->query($sqlGenero);
+
+require "config/partials/header.php"; //header
 ?>
 
 
@@ -90,18 +107,19 @@ require "config/partials/header.php";
                                 <td><?= $row['nombre_proyecto']; ?></td>
                                 <td>
                                     <a href="index1.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-warning">Editar</a>
-                                    <a href="generar_pdf.php?id=<?= $row['id']; ?>" class="btn btn-sm btn-info" target="_blank"><i class="fa-solid fa-file-pdf"></i> Generar PDF</a>
-
-
-                                    <form action="eliminar_proyecto.php" method="post" style="display:inline;">
-                                        <input type="hidden" name="id_proyecto" value="<?= $row['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">Eliminar</button>
-                                    </form>
-                                    <form action="generar_excel.php" method="post" style="display:inline;">
-                                        <input type="hidden" name="id_proyecto" value="<?= $row['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-success">Generar Excel</button>
-                                    </form>
-
+                                    <?php if ($rol === 'admin') { ?>
+                                        <a href="generar_pdf.php?id=<?= $row['id']; ?>" class="btn btn-sm btn-info" target="_blank"><i class="fa-solid fa-file-pdf"></i> Generar PDF</a>
+                                        <form action="eliminar_proyecto.php" method="post" style="display:inline;">
+                                            <input type="hidden" name="id_proyecto" value="<?= $row['id']; ?>">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">Eliminar</button>
+                                        </form>
+                                        <form action="generar_excel.php" method="post" style="display:inline;">
+                                            <input type="hidden" name="id_proyecto" value="<?= $row['id']; ?>">
+                                            <button type="submit" class="btn btn-sm btn-success">Generar Excel</button>
+                                        </form>
+                                    <?php } elseif ($rol === 'usuario') { ?>
+                                        <a href="generar_pdf.php?id=<?= $row['id']; ?>" class="btn btn-sm btn-info" target="_blank"><i class="fa-solid fa-file-pdf"></i> Generar PDF</a>
+                                    <?php } ?>
                                 </td>
                             </tr>
                         <?php } ?>
@@ -110,9 +128,6 @@ require "config/partials/header.php";
             </form>
         </div>
 
-        <?php
-        $sqlGenero = "SELECT id, nombre FROM materiales ";
-        $generos = $conn->query($sqlGenero);
-        ?>
+
 
         <?php require "config/partials/footer.php"; ?>

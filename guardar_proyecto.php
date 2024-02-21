@@ -36,11 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['id'])) {
     $stmtInsertHistorial->close();
 
     // Eliminar los registros de detalle_temp después de guardar el proyecto
-    $deleteTempRecords = "DELETE FROM detalle_temp WHERE usuario_id = ?";
-    $stmtDeleteTempRecords = $conn->prepare($deleteTempRecords);
-    $stmtDeleteTempRecords->bind_param("i", $usuarioId);
-    $stmtDeleteTempRecords->execute();
-    $stmtDeleteTempRecords->close();
+    // $deleteTempRecords = "DELETE FROM detalle_temp WHERE usuario_id = ?";
+    // $stmtDeleteTempRecords = $conn->prepare($deleteTempRecords);
+    // $stmtDeleteTempRecords->bind_param("i", $usuarioId);
+    // $stmtDeleteTempRecords->execute();
+    // $stmtDeleteTempRecords->close();
 
     // Redireccionar al usuario a una página de confirmación o a donde sea necesario
     header("Location: home.php");

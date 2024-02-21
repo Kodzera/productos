@@ -35,10 +35,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['nombre_proyecto'])) {
 
 // Consulta SQL para seleccionar las empresas según el rol del usuario
 if ($rol === 'admin') {
-    $sqlPeliculas = "SELECT id, nombre_empresa AS nombre_proyecto FROM empresas ORDER BY id DESC";
-    $peliculas = $conn->query($sqlPeliculas);
+    $sqlPeliculas = "SELECT e.id, e.nombre_empresa AS nombre_proyecto, u.nombre AS nombre_tecnico
+    FROM empresas e
+    INNER JOIN usuarios u ON e.id_usuario = u.id
+    ORDER BY e.id DESC";
+
+    $stmt = $conn->prepare($sqlPeliculas);
+    $stmt->execute();
+    $peliculas = $stmt->get_result();
 } else {
-    $sqlPeliculas = "SELECT id, nombre_empresa AS nombre_proyecto FROM empresas WHERE id_usuario = ? ORDER BY id DESC";
+    $sqlPeliculas = "SELECT e.id, e.nombre_empresa AS nombre_proyecto, u.nombre AS nombre_tecnico
+    FROM empresas e
+    INNER JOIN usuarios u ON e.id_usuario = u.id
+    WHERE e.id_usuario = ?
+    ORDER BY e.id DESC";
+
     $stmt = $conn->prepare($sqlPeliculas);
     $stmt->bind_param("i", $idUsuario);
     $stmt->execute();
@@ -96,6 +107,7 @@ require "config/partials/header.php"; //header
                         <tr>
                             <th>Id</th>
                             <th>Nombre del Proyecto</th>
+                            <th>Técnico</th>
                             <th>Acción</th>
                         </tr>
                     </thead>
@@ -105,6 +117,7 @@ require "config/partials/header.php"; //header
                             <tr>
                                 <td><?= $row['id']; ?></td>
                                 <td><?= $row['nombre_proyecto']; ?></td>
+                                <td><?= $row['nombre_tecnico']; ?></td>
                                 <td>
                                     <a href="index1.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-warning">Editar</a>
                                     <?php if ($rol === 'admin') { ?>

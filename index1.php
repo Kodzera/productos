@@ -3,7 +3,7 @@ session_start();
 require 'config/database.php';
 require "config/partials/header.php";
 $nombreUsuario = $_SESSION['nombre'] ?? '';
-$usuarioId = $_SESSION['id'] ?? null;
+$usuarioId = $_SESSION['id_usuario'] ?? null;
 
 // Obtener la lista de materiales disponibles
 $query = "SELECT * FROM materiales";

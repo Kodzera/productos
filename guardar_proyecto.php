@@ -3,8 +3,8 @@ session_start();
 require 'config/database.php';
 
 // Verificar si se ha enviado el formulario y el usuario está autenticado
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['id'])) {
-    $usuarioId = $_SESSION['id'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['id_usuario'])) {
+    $usuarioId = $_SESSION['id_usuario'];
     $idProyecto = $_POST['id_proyecto'];
 
     // Obtener los materiales seleccionados por el usuario

@@ -2,7 +2,7 @@
 require 'config/database.php';
 
 // Obtener el ID del proyecto seleccionado
-$idProyecto = isset($_POST['id_proyecto']) ? $_POST['id_proyecto'] : null;
+$idProyecto = isset($_POST['id_proyecto']) ? intval($_POST['id_proyecto']) : null;
 
 if ($idProyecto) {
     // Obtener los datos del proyecto desde la base de datos
@@ -23,14 +23,19 @@ if ($idProyecto) {
     // Crear un puntero de archivo temporal (output stream)
     $output = fopen('php://output', 'w');
 
-    // Escribir el encabezado en el archivo CSV
+
 
     // Escribir los datos en el archivo CSV
     while ($data = $result->fetch_assoc()) {
         fputcsv($output, array($data['id_material'], $data['nombre_material'], $data['cantidad']));
     }
+
     // Cerrar el puntero de archivo
     fclose($output);
+
+    // Cerrar el statement y la conexión
+    $stmt->close();
+    $conn->close();
 } else {
     echo "ID de proyecto no válido.";
 }

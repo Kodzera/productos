@@ -63,6 +63,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_id'])) {
     exit();
 }
 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nuevoRegistro = $_POST['nuevoRegistro'];
+
+    if (!empty($nuevoRegistro)) {
+        //insertar el nuevo material
+        $sql = "INSERT INTO materiales(nombre) VALUES (?)";
+        // Preparar la declaración y enlazar el parámetro
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $nuevoRegistro); // 's' indica que es una cadena
+
+        // Ejecutar la consulta
+        if ($stmt->execute()) {
+            echo "El nuevo material se ha registrado correctamente.";
+        } else {
+            echo "Error al registrar el nuevo material: " . $conn->error;
+        }
+
+        // Cerrar la declaración
+        $stmt->close();
+    } else {
+        echo "El campo de nuevo material está vacío.";
+    }
+}
+
 ?>
 
 <body class="d-flex flex-column h-100">
@@ -83,53 +108,57 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_id'])) {
         }
         ?>
         <!-- Formulario para agregar nuevo proyecto -->
-
+        <style>
+            .uppercase {
+                text-transform: uppercase;
+            }
+        </style>
         <div class="form-group mb-3">
             <label for="nombreProyecto">Nombre del proyecto</label>
-            <input type="text" class="form-control" id="nombreProyecto" value="<?php echo $nombreProyecto; ?>" readonly>
+            <input type="text" class="form-control uppercase" id="nombreProyecto" value="<?php echo $nombreProyecto; ?>" readonly>
 
         </div>
 
-        <!-- Formulario para agregar nuevo material -->
-        <form action="" method="POST" class="mb-4">
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="materialExistente">Material</label>
-                    <select class="form-control" id="materialExistente" name="materiales[]">
-                        <option value="">Seleccione el material</option>
-                        <?php while ($row = mysqli_fetch_assoc($resultadoMateriales)) { ?>
-                            <option value="<?= $row['id']; ?>"><?= $row['nombre']; ?></option>
-                        <?php } ?>
-                    </select>
+        <div class="d-flex justify-content-between">
+            <!-- Formulario para agregar nuevo material -->
+            <form action="" method="POST" class="mb-4 col-md-4">
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="materialExistente">Material</label>
+                        <select class="form-control" id="materialExistente" name="materiales[]">
+                            <option value="">Seleccione el material</option>
+                            <?php while ($row = mysqli_fetch_assoc($resultadoMateriales)) { ?>
+                                <option value="<?= $row['id']; ?>"><?= $row['nombre']; ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="cantidadMaterial">Cantidad</label>
+                        <input type="number" class="form-control" id="cantidadMaterial" placeholder="Cantidad" name="cantidad" min="1" required>
+                    </div>
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="cantidadMaterial">Cantidad</label>
-                    <input type="number" class="form-control" id="cantidadMaterial" placeholder="Cantidad" name="cantidad" min="1" required>
-                </div>
-                <div class="form-group col-md-2 align-self-end mt-2">
-                    <form action="" method="POST" class="mb-4">
-                        <!-- Otros campos del formulario -->
-                        <input type="hidden" name="id_proyecto" value="<?php echo $idProyecto; ?>">
-                        <button type="submit" class="btn btn-primary btn-block">Agregar Material</button>
-                    </form>
+                <!-- Otros campos del formulario -->
+                <input type="hidden" name="id_proyecto" value="<?php echo $idProyecto; ?>">
+                <button type="submit" class="btn btn-primary btn-block">Agregar Material</button>
+            </form>
 
+            <!-- Formulario para agregar nuevo material si no está en la lista -->
+            <form action="" method="POST" class="mb-4 col-md-4">
+                <div class="form-group">
+                    <label for="nuevoRegistro">Añadir Nuevo Material</label>
+                    <input type="text" class="form-control" id="nuevoRegistro" placeholder="Agregar un nuevo material" name="nuevoRegistro">
                 </div>
-            </div>
-        </form>
+                <button type="submit" class="btn btn-primary mt-2">Registrar Nuevo Material</button>
+            </form>
+        </div>
+
         <!-- Agregar este formulario al final de tu página -->
         <form action="guardar_proyecto.php" method="post">
             <input type="hidden" name="id_proyecto" value="<?= $idProyecto ?>">
             <button type="submit" class="btn btn-success my-3">Guardar Proyecto</button>
         </form>
 
-        <!-- Formulario para agregar nuevo material si no está en la lista -->
-        <!-- <form action="" method="POST" class="mb-4">
-            <div class="form-group">
-                <label for="nuevoRegistro">Añadir Nuevo Material</label>
-                <input type="text" class="form-control" id="nuevoRegistro" placeholder="Agregar un nuevo material" name="nuevoRegistro">
-            </div>
-            <button type="submit" class="btn btn-primary mt-2">Registrar Nuevo Material</button>
-        </form> -->
+
 
         <!-- Lista de materiales seleccionados -->
         <table class="table table-sm table-striped table-hover">
@@ -178,5 +207,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_id'])) {
 
         </table>
     </div>
-
-    <?php require "config/partials/footer.php"; ?>

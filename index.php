@@ -36,34 +36,34 @@ require "config/partials/header.php";
 
 
 <body class="bg-primary">
+    <style>
+        .redinco {
+            font-size: 500;
+            border-bottom: 2px solid #1C3969;
+        }
+    </style>
     <div id="layoutAuthentication">
         <div id="layoutAuthentication_content">
             <main>
-                <div class="container">
-                    <div class="row justify-content-center">
+                <div class="container h-100">
+                    <div class="row h-100 justify-content-center align-items-center">
                         <div class="col-lg-5">
                             <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                <div class="row justify-content-center"><img src="images/logo.png" width="300"></div>
+                                <div class="row justify-content-center"><img src="images/logo.png" width="250"></div>
                                 <div class="card-body">
-                                    <h3 class="text-center font-weight-light my-4">Login</h3>
+                                    <h3 class="text-center font-weight-light my-4">Bienvenido a <span class="redinco">Redinco</span></h3>
                                     <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                                         <div class="form-group">
                                             <label class="small mb-1" for="inputUsuario">Usuario</label>
-                                            <input class="form-control py-4" id="inputUsuario" name="usuario" type="text" placeholder="Enter username" />
+                                            <input class="form-control py-4" id="inputUsuario" name="usuario" type="text" placeholder="Enter username" autofocus />
                                         </div>
                                         <div class="form-group">
-                                            <label class="small mb-1" for="inputPassword">Password</label>
+                                            <label class="small mb-1" for="inputPassword">Contraseña</label>
                                             <input class="form-control py-4" id="inputPassword" name="password" type="password" placeholder="Enter password" />
                                         </div>
-                                        <div class="form-group">
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input" id="rememberPasswordCheck" type="checkbox" />
-                                                <label class="custom-control-label" for="rememberPasswordCheck">Remember password</label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                            <a class="small" href="password.html">Forgot Password?</a>
-                                            <button type="submit" class="btn btn-primary">Login</button>
+
+                                        <div class="form-group d-flex align-items-center justify-content-center mt-4 mb-0">
+                                            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
                                         </div>
                                     </form>
                                 </div>
@@ -76,24 +76,12 @@ require "config/partials/header.php";
                 </div>
             </main>
         </div>
-        <div id="layoutAuthentication_footer">
-            <footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; Your Website 2019</div>
-                        <div>
-                            <a href="#">Privacy Policy</a>
-                            &middot;
-                            <a href="#">Terms &amp; Conditions</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-        </div>
+
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="js/scripts.js"></script>
 </body>
+
 
 </html>

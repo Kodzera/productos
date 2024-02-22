@@ -2,9 +2,9 @@
 session_start();
 require 'config/database.php';
 
-// if (!isset($_SESSION['id'])) {
-//     header("Location: index.php");
-// }
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: index.php");
+}
 
 $nombre = $_SESSION['nombre'];
 $rol = $_SESSION['rol']; // Obtener el rol del usuario de la sesión
@@ -140,4 +140,3 @@ require "config/partials/header.php"; //header
                 </table>
             </form>
         </div>
-        <?php require "config/partials/footer.php"; ?>

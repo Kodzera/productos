@@ -121,7 +121,8 @@ require "config/partials/header.php"; //header
                                 <td>
                                     <a href="index1.php?id=<?php echo $row['id']; ?>" class="btn btn-sm btn-warning">Editar</a>
                                     <?php if ($rol === 'admin') { ?>
-                                        <a href="generar_pdf.php?id=<?= $row['id']; ?>" class="btn btn-sm btn-info" target="_blank"><i class="fa-solid fa-file-pdf"></i> Generar PDF</a>
+                                        <a href="generar_pdf.php?id=<?= $row['id']; ?>&nombre_empresa=<?= urlencode($row['nombre_proyecto']); ?>" class="btn btn-sm btn-info"><i class="fa-solid fa-file-pdf"></i> Generar PDF</a>
+
                                         <form action="eliminar_proyecto.php" method="post" style="display:inline;">
                                             <input type="hidden" name="id_proyecto" value="<?= $row['id']; ?>">
                                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')">Eliminar</button>
@@ -131,7 +132,7 @@ require "config/partials/header.php"; //header
                                             <button type="submit" class="btn btn-sm btn-success">Generar Excel</button>
                                         </form>
                                     <?php } elseif ($rol === 'usuario') { ?>
-                                        <a href="generar_pdf.php?id=<?= $row['id']; ?>" class="btn btn-sm btn-info" target="_blank"><i class="fa-solid fa-file-pdf"></i> Generar PDF</a>
+                                        <a href="generar_pdf.php?id=<?= $row['id']; ?>" class="btn btn-sm btn-info"><i class="fa-solid fa-file-pdf"></i> Generar PDF</a>
                                     <?php } ?>
                                 </td>
                             </tr>
